@@ -1,3 +1,5 @@
+# Custom Script for Linux
+
 #!/bin/bash
 
 # The MIT License (MIT)
@@ -77,8 +79,6 @@ echo -e '
         ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined
         SSLEngine on
-        #SSLCertificateFile /moodle/certs/fullchain.pem
-        #SSLCertificateKeyFile /moodle/certs/privkey.pem
         SSLCertificateFile /moodle/certs/da0c9b915e6265f2.crt
         SSLCertificateKeyFile /moodle/certs/privateKey.pem
         BrowserMatch "MSIE [2-6]" \
@@ -86,6 +86,17 @@ echo -e '
                         downgrade-1.0 force-response-1.0
         BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 </VirtualHost>' > /etc/apache2/sites-enabled/000-default.conf
+
+# Certificado e senha
+sed -i "s/ask-for-passphrase/key/" /etc/apache2/mods-enabled/ssl.conf
+
+cat > /usr/share/apache2/key <<EOF
+#!/bin/bash
+echo 'Unibrasil2016'
+EOF
+
+chmod +x /usr/share/apache2/key
+
 
 #Tunnig
 sudo touch /usr/lib/cgi-bin/php5.fcgi
@@ -269,8 +280,6 @@ php_admin_flag[log_errors] = on
 php_value[session.save_handler] = files
 php_value[session.save_path]    = /var/lib/php5/session
 php_value[soap.wsdl_cache_dir]  = /var/lib/php5/wsdlcache" > /etc/php5/fpm/pool.d/www.conf
-
-
 
 # php config 
 PhpIni=/etc/php5/apache2/php.ini
