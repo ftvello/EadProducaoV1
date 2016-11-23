@@ -41,7 +41,7 @@ sudo apt-get -y install apache2 php5
 sudo apt-get -y install graphviz aspell php5-pspell php5-curl php5-gd php5-intl php5-mysql php5-xmlrpc php5-ldap php5-redis
 
 # install modules for tunning
-sudo apt-get -y install libapache2-mod-fastcgi php5-fpm php5-apcu php5-memcached memcached
+sudo apt-get -y install libapache2-mod-fastcgi php5-fpm php5-apcu
 
 # create gluster mount point
 sudo mkdir -p /moodle
@@ -163,7 +163,7 @@ apc.max_file_size=2M
 apc.cache_by_default=1
 apc.use_request_time=1
 apc.slam_defense=0
-;apc.mmap_file_mask=/tmp/apc.tmp
+#apc.mmap_file_mask=/tmp/apc.tmp
 apc.stat_ctime=0
 apc.canonicalize=1
 apc.write_lock=1
@@ -311,12 +311,8 @@ sed -i "s/^;process_control_timeout = 0/process_control_timeout = 10/" $PhpFpm
 sed -i "s/^;daemonize = yes/daemonize = yes/" $PhpFpm
 sed -i "s/^;events.mechanism = epoll/events.mechanism = epoll/" $PhpFpm
 
-
-
-echo -e" www-data soft nofile 16384
-www-data hard nofile 32768
-* soft nofile 16384
-* hard nofile 32768" > /etc/security/limits.d/limits.conf
+sudo chown -R www-data:azureadmin /moodle
+sudo chmod 770 -R /moodle/
 
 sudo a2enmod actions fastcgi alias
 sudo a2enconf php5-fpm
